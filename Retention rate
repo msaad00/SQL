@@ -29,3 +29,5 @@ all_users as (
 
 select CAST(retention_user as float)/ cast(total_users as float) *100 as retention_rate
 from retention_users,all_users;
+
+
