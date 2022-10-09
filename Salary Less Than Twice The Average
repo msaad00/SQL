@@ -1,0 +1,45 @@
+--Problem:
+     Write a query to get the list of managers whose salary is less than twice the average salary of employees reporting to them. 
+     For these managers, output their ID, salary and the average salary of employees reporting to them
+       Tables: 
+        map_employee_hierarchy
+        columns:
+        empl_id:varchar
+        manager_empl_id:varchar
+        
+        dim_employee
+        columns:
+        empl_id:varchar
+        empl_name:varchar
+        empl_city:varchar
+        empl_dob:datetime
+        empl_pin:int
+        salary:int
+         
+ --Solution: 
+with managers as(
+      select 
+             m.manager_empl_id as manager,
+             e.empl_id as employee,
+             salary
+      from dim_employee e
+      join map_employee_hierarchy m
+      on e.empl_id = m.manager_empl_id),
+
+mngr_employees_avg as (
+         select 
+             m.manager_empl_id as manager,
+             e.empl_id as employee,
+             e.salary,
+             avg(e.salary) over (partition by manager_empl_id) as avg_empl_pr_mngr
+         from dim_employee e
+         join map_employee_hierarchy m
+         on e.empl_id = m.empl_id)
+        
+select distinct (me.manager) as manager_id,
+       me.salary as manager_salary,
+       av.avg_empl_pr_mngr as employees_avg
+from   managers me
+join mngr_employees_avg av
+on me.manager = av.manager
+where me.salary < (2 * av.avg_empl_pr_mngr);
