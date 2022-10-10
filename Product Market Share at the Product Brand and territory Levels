@@ -56,9 +56,8 @@ select territory_id,
        prod_sku_name,
         total_prod_brand_sales,
          total_territory_sales,
-       cast(total_prod_brand_sales as float)/cast(total_territory_sales as float) * 100
-       ||('%')as market_share
+       cast(total_prod_brand_sales as float)/
+       cast(total_territory_sales as float) * 100 ||('%')as market_share
 from territory_brands_sales
-order by 1,2,3
 
 
