@@ -1,1 +1,65 @@
+-Problem:
+     Write a query to find the Market Share at the Product Brand level for each Territory, for Time Period Q4-2021. 
+     Market Share is the number of Products of a certain Product Brand brand sold in a territory, 
+     divided by the total number of Products sold in this Territory.
+     Output the ID of the Territory, name of the Product Brand and the corresponding Market Share in percentages.
+     Only include these Product Brands that had at least one sale in a given territory.
+       Tables: 
+        fct_customer_sales
+        columns:
+       cust_id:varchar
+       prod_sku_id:varcharorder_date:datetime
+       order_value:int
+       order_id:varchar
+        
+      map_customer_territory
+        columns:
+        cust_id:varchar
+        territory_id:varchar
+       
+      dim_product
+       columns:
+       prod_sku_id:varchar
+       prod_sku_name:varchar
+       prod_brand:varchar
+       market_name:varchar
+         
+ --Solution: 
+with filtered_fct_sales as (
+      select cust_id,
+       prod_sku_id
+      from (
+           select *,
+                 'Q' || to_char(order_date,'Q-YYYY') as quarter_year
+            from fct_customer_sales) cst_qty
+      where quarter_year = 'Q4-2021'),
+
+territory_brands_sales as (
+         select
+                t.territory_id,
+                prod_brand,
+                prod_sku_name,
+                count(fs.prod_sku_id) over (partition by prod_brand,
+                fs.prod_sku_id,territory_id)
+                as total_prod_brand_sales,
+                count(fs.prod_sku_id) over (partition by territory_id)
+                as total_territory_sales
+         from filtered_fct_sales fs
+         join map_customer_territory t
+         on fs.cust_id = t.cust_id
+         join dim_product p
+         on fs.prod_sku_id = p.prod_sku_id
+         
+)
+
+select distinct(territory_id),
+       prod_brand,
+       prod_sku_name,
+        total_prod_brand_sales,
+         total_territory_sales,
+       cast(total_prod_brand_sales as float)/cast(total_territory_sales as float) * 100
+       ||('%')as market_share
+from territory_brands_sales
+order by 1,2,3;
+
 
