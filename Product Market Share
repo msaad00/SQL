@@ -52,7 +52,7 @@ territory_brands_sales as (
          
 )
 
-select distinct(territory_id),
+select territory_id,
        prod_brand,
        prod_sku_name,
         total_prod_brand_sales,
