@@ -39,9 +39,9 @@ territory_brands_sales as (
                 t.territory_id,
                 prod_brand,
                 prod_sku_name,
-                count(fs.prod_sku_id) over (partition by prod_brand,territory_id)
+                count(*) over (partition by prod_brand,territory_id)
                 as total_prod_brand_sales,
-                count(fs.prod_sku_id) over (partition by territory_id)
+                count(*) over (partition by territory_id)
                 as total_territory_sales
          from filtered_fct_sales fs
          join map_customer_territory t
@@ -51,11 +51,8 @@ territory_brands_sales as (
          
 )
 
-select territory_id,
+select distinct(territory_id),
        prod_brand,
-       prod_sku_name,
-        total_prod_brand_sales,
-         total_territory_sales,
        cast(total_prod_brand_sales as float)/
        cast(total_territory_sales as float) * 100 ||('%')as market_share
 from territory_brands_sales
