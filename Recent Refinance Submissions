@@ -1,0 +1,34 @@
+--Problem:
+     Write a query that joins this submissions table to the loans table and returns the total loan balance on each user’s most recent ‘Refinance’ submission. 
+     Return all users and the balance for each of them.
+    
+       Table: 
+        Loans
+          columns:
+            id: int
+            user_id: int
+            created_at: datetime
+            status:varchar
+            type:varchar
+            
+        Submissions
+           columns:
+             id: int
+             balance: float
+             interest_rate: float
+             rate_type: varchar
+             loan_id: int
+         
+ --Solution: 
+       with date_ranking as (select *,
+                             rank() over (partition by user_id order by created_at DESC) as date_rank
+                             from loans
+                             where type = 'Refinance')
+                      
+   select user_id,
+          sum(balance) as total_balance
+   from date_ranking dr
+   join submissions s 
+   on dr.id = s.loan_id
+   where date_rank = 1
+   group by 1;
