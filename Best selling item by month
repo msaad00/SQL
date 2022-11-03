@@ -2,7 +2,7 @@
      Find the best selling item for each month (no need to separate months by year) where the biggest total invoice was paid. 
      The best selling item is calculated using the formula (unitprice * quantity). 
      Output the description of the item along with the amount paid.
-       Table: 
+       Table: invoices
         columns:
          invoiceno:varchar
          stockcode:varchar
@@ -14,14 +14,14 @@
          country:varchar
          
  --Solution: 
- WITH online_retail_amount AS(
-      SELECT *,
-      quantity * unitprice AS amount,
-      DATE_PART('month', invoicedate) AS month
-      FROM online_retail
+    WITH online_retail_amount AS(
+        SELECT *,
+               quantity * unitprice AS amount,
+               DATE_PART('month', invoicedate) AS month
+        FROM online_retail
 ),
-monthly_total_by_product AS(
-     SELECT 
+ monthly_total_by_product AS(
+      SELECT 
          month, 
          description,
          SUM(amount) AS total_amount
