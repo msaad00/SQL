@@ -1,0 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+with salary_ranking as (select distinct department as department_name,
+                               salary,
+                               dense_rank () over (partition by department order by salary DESC) as salary_rnk
+                        from twitter_employee)
+                        
+                        
+                        
+select department_name,
+       salary,
+       salary_rnk
+from salary_ranking
+where salary_rnk <=3
+order by 1,2 desc;
