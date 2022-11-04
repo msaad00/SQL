@@ -25,17 +25,17 @@
        market_name:varchar
          
  --Solution: 
-with filtered_fct_sales as (
-      select cust_id,
-       prod_sku_id
-      from (
-           select *,
-                 'Q' || to_char(order_date,'Q-YYYY') as quarter_year
-            from fct_customer_sales) cst_qty
-      where quarter_year = 'Q4-2021'),
+     WITH filtered_fct_sales as (
+           SELECT cust_id,
+                  prod_sku_id
+           FROM (
+                 SELECT *,
+                       'Q' || to_char(order_date,'Q-YYYY') as quarter_year
+                 FROM fct_customer_sales) cst_qty
+                 WHERE quarter_year = 'Q4-2021'),
 
 territory_brands_sales as (
-         select
+         SELECT
                 t.territory_id,
                 prod_brand,
                 prod_sku_name,
@@ -43,18 +43,18 @@ territory_brands_sales as (
                 as total_prod_brand_sales,
                 count(*) over (partition by territory_id)
                 as total_territory_sales
-         from filtered_fct_sales fs
-         join map_customer_territory t
-         on fs.cust_id = t.cust_id
-         join dim_product p
-         on fs.prod_sku_id = p.prod_sku_id
+         FROM filtered_fct_sales fs
+         JOIN map_customer_territory t
+         ON fs.cust_id = t.cust_id
+         JOIN dim_product p
+         ON fs.prod_sku_id = p.prod_sku_id
          
 )
 
-select distinct(territory_id),
+SELECT distinct(territory_id),
        prod_brand,
        cast(total_prod_brand_sales as float)/
        cast(total_territory_sales as float) * 100 ||('%')as market_share
-from territory_brands_sales
+FROM territory_brands_sales
 
 
