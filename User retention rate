@@ -11,7 +11,7 @@
          
 --Solution: 
 with first_next_login as (
-    select 
+    SELECT
        distinct(player_id),
        min (login_date) over (partition by player_id order by login_date) 
        as first_login,
@@ -19,18 +19,18 @@ with first_next_login as (
        as next_login,
        lead (login_date) over (partition by player_id order by login_date)
        - min (login_date) over (partition by player_id order by login_date)as diff
-    from players_logins),
+    FROM players_logins),
 
 retention_users as (
-      select 
+      SELECT 
        sum(CASE WHEN diff = 1 THEN 1 ELSE 0 END) as retention_user
-      from first_next_login),
+      FROM first_next_login),
 
 all_users as (
-       select count (distinct(player_id)) as total_users
-       from players_logins)
+       SELECT count (distinct(player_id)) as total_users
+       FROM players_logins)
 
-select CAST(retention_user as float)/ cast(total_users as float) *100 as retention_rate
-from retention_users,all_users;
+SELECT CAST(retention_user as float)/ cast(total_users as float) *100 as retention_rate
+FROM retention_users,all_users;
 
 
