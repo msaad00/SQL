@@ -22,8 +22,8 @@
          
  --Solution: 
  
-      select extract(isodow from Customer_placed_order_datetime) as weekday,
+      SELECT extract(isodow from Customer_placed_order_datetime) as weekday,
              extract(hour from Customer_placed_order_datetime) as hour,
              avg(order_total) as avg_order_total
-       from doordash_delivery
-       group by 1,2;;
+      FROM doordash_delivery
+      GROUP BY 1,2;;
