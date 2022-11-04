@@ -28,16 +28,16 @@
                  city_name,
                  count (*) as num_customers
           FROM linkedin_city lc 
-          inner join linkedin_customers lcs
-          on lc.id = lcs.city_id
-          join linkedin_country lctr
-          on lc.country_id = lctr.id
-          group by 1,2)
+          INNER JOIN linkedin_customers lcs
+          ON lc.id = lcs.city_id
+          JOIN linkedin_country lctr
+          ON lc.country_id = lctr.id
+          GROUP BY 1,2)
 
 
    SELECT country_name,
           city_name,
           num_customers
    FROM number_of_customers
-   where num_customers > (SELECT avg (num_customers) 
+   WHERE num_customers > (SELECT avg (num_customers) 
                            FROM number_of_customers);
