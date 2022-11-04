@@ -17,29 +17,29 @@
         salary:int
          
  --Solution: 
-with managers as(
-      select 
-             m.manager_empl_id as manager,
-             e.empl_id as employee,
-             salary
-      from dim_employee e
-      join map_employee_hierarchy m
-      on e.empl_id = m.manager_empl_id),
+    WITH managers as(
+           SELECT
+                  m.manager_empl_id as manager,
+                  e.empl_id as employee,
+                  salary
+           FROM dim_employee e
+           JOIN map_employee_hierarchy m
+           ON e.empl_id = m.manager_empl_id),
 
 mngr_employees_avg as (
-         select 
+         SELECT
              m.manager_empl_id as manager,
              e.empl_id as employee,
              e.salary,
              avg(e.salary) over (partition by manager_empl_id) as avg_empl_pr_mngr
-         from dim_employee e
-         join map_employee_hierarchy m
-         on e.empl_id = m.empl_id)
+         FROM dim_employee e
+         JOIN map_employee_hierarchy m
+         ON e.empl_id = m.empl_id)
         
-select distinct (me.manager) as manager_id,
+SELECT distinct (me.manager) as manager_id,
        me.salary as manager_salary,
        av.avg_empl_pr_mngr as employees_avg
-from   managers me
-join mngr_employees_avg av
-on me.manager = av.manager
-where me.salary < (2 * av.avg_empl_pr_mngr);
+FROM   managers me
+JOIN mngr_employees_avg av
+ON me.manager = av.manager
+WHERE me.salary < (2 * av.avg_empl_pr_mngr);
