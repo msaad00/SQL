@@ -19,14 +19,14 @@
          manager_id:int
          
  --Solution: 
-     with salary_rank as (select department,
-                     first_name as employee_name,
-                     salary,
-                     rank () over (partition by department order by salary DESC) as salary_rnk
-                     from employee)
+     WITH salary_rank as (SELECT department,
+                                 first_name as employee_name,
+                                 salary,
+                                 rank () over (partition by department order by salary DESC) as salary_rnk
+                          FROM employee)
                      
                      
-select *
-from salary_rank
-where salary_rnk = 1
-order by salary DESC;
+     SELECT *
+     FROM salary_rank
+     WHERE salary_rnk = 1
+     ORDER BY salary DESC;
