@@ -13,10 +13,10 @@
          
          
  --Solution: 
-     select (CASE 
+      SELECT (CASE 
              WHEN
             SUM(CASE WHEN is_senior = 'True' THEN 1 ELSE 0 END)
             >
             SUM(CASE WHEN location = 'USA' THEN 1 ELSE 0 END) THEN 
             'More seniors' ELSE ' More USA-based' END) AS result
-     from facebook_employees;
+      FROM facebook_employees;
