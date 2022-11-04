@@ -20,15 +20,15 @@
              loan_id: int
          
  --Solution: 
-       with date_ranking as (select *,
-                             rank() over (partition by user_id order by created_at DESC) as date_rank
-                             from loans
-                             where type = 'Refinance')
+       with date_ranking as (SELECT *,
+                                    rank() over (partition by user_id order by created_at DESC) as date_rank
+                             FROM loans
+                             WHERE type = 'Refinance')
                       
-   select user_id,
-          sum(balance) as total_balance
-   from date_ranking dr
-   join submissions s 
-   on dr.id = s.loan_id
-   where date_rank = 1
-   group by 1;
+     SELECT user_id,
+            sum(balance) as total_balance
+     FROM date_ranking dr
+     JOIN submissions s 
+     ON dr.id = s.loan_id
+     WHERE date_rank = 1
+     GROUP BY 1;
