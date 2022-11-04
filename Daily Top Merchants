@@ -20,26 +20,26 @@
             
             
  --Solution: 
-    WITH orders_per_day as (select 
+    WITH orders_per_day as (SELECT 
                                    to_char(order_timestamp,'YYYY-MM-DD') as order_day,
                                    name,
                                    count(*) as number_of_orders
-                           from doordash_orders dr
-                           join doordash_merchants dm
-                           on dr.merchant_id = dm.id
-                           group by 1,2
-                           order by 3 DESC),
+                           FROM doordash_orders dr
+                           JOIN doordash_merchants dm
+                           ON dr.merchant_id = dm.id
+                           GROUP BY 1,2
+                           ORDER BY 3 DESC),
 
 
-   ranking as (select order_day,
+   ranking as (SELECT order_day,
                       name,
                       number_of_orders,
                       dense_rank() over (partition by order_day order by number_of_orders DESC)
                        as rnk
-               from orders_per_day)
+               FROM orders_per_day)
 
-   select order_Day,
+   SELECT order_Day,
           name,
           rnk as ranking
-   from ranking
-   where rnk <= 3;
+   FROM ranking
+   WHERE rnk <= 3;
