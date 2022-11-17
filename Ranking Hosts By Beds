@@ -1,0 +1,12 @@
+
+
+
+
+
+
+SELECT host_id,
+       sum(n_beds),
+       dense_rank() over (order by sum(n_beds) desc)
+       as rnk
+FROM airbnb_apartments
+GROUP BY 1;
